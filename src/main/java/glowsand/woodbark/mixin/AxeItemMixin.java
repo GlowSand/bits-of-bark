@@ -29,15 +29,9 @@ import java.util.Optional;
 
 @Mixin(AxeItem.class)
 public abstract class AxeItemMixin {
-
-
-
-
     @Shadow @Final protected static Map<Block, Block> STRIPPED_BLOCKS;
 
-
-
-    @Inject(method = "useOnBlock",at = @At("HEAD"))
+    @Inject(method = "useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;",at = @At("HEAD"))
     public void useOnBlockInject(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir){
         World world = context.getWorld();
 
