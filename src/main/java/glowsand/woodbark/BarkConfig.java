@@ -20,8 +20,8 @@ public class BarkConfig {
         this.woodTypes = woodTypes;
         this.giveBark = giveBark;
         this.isFood = isFood;
-        this.hunger=hunger;
-        this.saturation=saturation;
+        this.hunger = hunger;
+        this.saturation = saturation;
         this.isFuel = isFuel;
         this.fuelTicks = fuelTicks;
     }
@@ -29,14 +29,14 @@ public class BarkConfig {
     public static BarkConfig getDefaultConfig(){
         HashMap<String,String> defaultHashMap = new HashMap<>();
         List<String> giveBarkAt = new ArrayList<>();
-        giveBarkAt.add("#"+Woodbark.modId +":give_bark");
+        giveBarkAt.add("#" + Woodbark.modId + ":give_bark");
         giveBarkAt.add("#moretags:dressed_wood");
+        
         AxeItemAccessor.getStrippedBlocks().forEach(((block, block2) -> {
             defaultHashMap.put(Registry.BLOCK.getId(block2).toString(),Registry.BLOCK.getId(block).toString());
-
-                giveBarkAt.add(Registry.BLOCK.getId(block).toString());
-
+            giveBarkAt.add(Registry.BLOCK.getId(block).toString());
         }));
-        return new BarkConfig(defaultHashMap,giveBarkAt,true,2,0.1F,true,75);
+        
+        return new BarkConfig(defaultHashMap, giveBarkAt, true, 2, 0.1F, true, 75);
     }
 }
