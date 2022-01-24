@@ -4,11 +4,9 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.impl.tag.extension.TagFactoryImpl;
-import net.fabricmc.loader.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.tag.Tag;
@@ -35,41 +33,35 @@ public class Woodbark implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
-        GIVE_BARK=TagFactoryImpl.BLOCK.create(new Identifier(modId,"give_bark"));
+        GIVE_BARK = TagFactoryImpl.BLOCK.create(new Identifier(modId,"give_bark"));
         initMod();
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, serverResourceManager) -> initConfig());
     }
 
 
     public static void initConfig(){
-        try{
-            if (pathForTheConfig.toFile().exists()){
-                config= configDataStuff.fromJson(new String(Files.readAllBytes(pathForTheConfig)),BarkConfig.class);
-            }else{
+        try {
+            if (pathForTheConfig.toFile().exists()) {
+                config = configDataStuff.fromJson(new String(Files.readAllBytes(pathForTheConfig)),BarkConfig.class);
+            } else {
                 Files.write(pathForTheConfig, Collections.singleton(configDataStuff.toJson(defaultConfig)));
-                config=defaultConfig;
+                config = defaultConfig;
             }
-        }catch (Exception exception){
+            
+            for (int i=0; i<config.giveBark.size(); i++) config.giveBark.set(i, config.giveBark.get(i).toLowerCase());
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
-    public void initMod(){
+    public void initMod() {
         initConfig();
 
-            if (config.isFood) {
-                barkItem = new BarkItem(new FoodComponent.Builder().hunger(config.hunger).saturationModifier(config.saturation).snack().build());
-            } else {
-                barkItem = new BarkItem();
-            }
+        if (config.isFood) barkItem = new BarkItem(new FoodComponent.Builder().hunger(config.hunger).saturationModifier(config.saturation).snack().build());
+        else barkItem = new BarkItem();
 
-            Registry.register(Registry.ITEM, new Identifier(modId, "wood_bark"),
-                    barkItem
-            );
-            if (config.isFuel) {
-                FuelRegistry.INSTANCE.add(barkItem, config.fuelTicks);
-            }
+        Registry.register(Registry.ITEM, new Identifier(modId, "wood_bark"), barkItem);
+        if (config.isFuel) FuelRegistry.INSTANCE.add(barkItem, config.fuelTicks);
 
     }
 }
